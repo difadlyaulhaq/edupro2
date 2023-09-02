@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 class Dashboard extends StatelessWidget {
-  const Dashboard({Key? key}) : super(key: key);
+  final dynamic user;
+
+  Dashboard({Key? key, required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -10,14 +12,13 @@ class Dashboard extends StatelessWidget {
         automaticallyImplyLeading: false,
         title: Row(
           children: [
-
             Padding(
               padding: const EdgeInsets.only(left: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Selamat datang \nNada Satya M.",
+                    "Selamat datang \n${user['username']}",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 30,

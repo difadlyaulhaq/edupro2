@@ -1,8 +1,40 @@
 import 'package:edupro/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 class SignupPage extends StatelessWidget {
-  const SignupPage({Key? key}) : super(key: key);
+  SignupPage({Key? key}) : super(key: key);
+
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  Future<void> signUp(String email, String username, String password) async {
+    if(password.length < 8){
+      return; 
+    }
+
+    final response = await http.post(
+      Uri.parse('http://192.168.56.131:3000/register'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String,String>{
+        'email': email,
+        'username': username,
+        'password': password,
+      }),
+    );
+    if (response.statusCode == 200) {
+      print('User registered successfully');
+    } else {
+      print('Failed to register user');
+      print('Response status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +67,7 @@ class SignupPage extends StatelessWidget {
                 padding: EdgeInsets.only(left: 30, top: 80, right: 30),
                 child: Center(
                   child: TextField(
+                    controller: usernameController,
                     decoration: InputDecoration(
                       hintText: 'Name',
                       hintStyle: TextStyle(
@@ -51,6 +84,7 @@ class SignupPage extends StatelessWidget {
                 padding: EdgeInsets.only(left: 30, top: 10, right: 30),
                 child: Center(
                   child: TextField(
+                    controller: emailController,
                     decoration: InputDecoration(
                       hintText: 'Email',
                       hintStyle: TextStyle(
@@ -66,7 +100,8 @@ class SignupPage extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(left: 30, top: 10, right: 30),
                 child: Center(
-                  child: TextField(
+                  child: TextFormField(
+                    controller: passwordController,
                     decoration: InputDecoration(
                       hintText: 'Password',
                       hintStyle: TextStyle(
@@ -107,7 +142,11 @@ class SignupPage extends StatelessWidget {
                 child: Center(
                   child: ElevatedButton(
                     onPressed: () {
-
+                      String email = emailController.text;
+                      String username = usernameController.text;
+                      String password = passwordController.text;
+                      signUp(email, username, password);
+                      Navigator.pop(context);
                     },
                     child: Text("REGISTER",
                       style: TextStyle(
